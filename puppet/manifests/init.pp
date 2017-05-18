@@ -21,3 +21,9 @@ rbenv::build { "2.4.0":
   global => true,
   require => [Rbenv::Plugin["sstephenson/ruby-build"], Rbenv::Plugin["ianheggie/rbenv-binstubs"], Rbenv::Plugin["sstephenson/rbenv-gem-rehash"]]
 }
+
+# --- Rails ---------------------------------------------------------------------
+package { "rails":
+  ensure   => 'installed',
+  provider => 'gem'
+}
