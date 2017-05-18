@@ -14,7 +14,8 @@ set -e
   PUPPET_COLLECTION="-${PUPPET_COLLECTION}"
 [[ "${PUPPET_COLLECTION}" == "" ]] && PINST="puppet" || PINST="puppet-agent"
 
-REPO_DEB_URL="http://apt.puppetlabs.com/puppetlabs-release${PUPPET_COLLECTION}-${DISTRIB_CODENAME}.deb"
+#REPO_DEB_URL="http://apt.puppetlabs.com/puppetlabs-release${PUPPET_COLLECTION}-${DISTRIB_CODENAME}.deb"
+REPO_DEB_URL="http://apt.puppetlabs.com/puppetlabs-release-pc1-xenial.deb"
 
 #--------------------------------------------------------------------
 # NO TUNABLES BELOW THIS POINT
@@ -49,6 +50,16 @@ echo "Installing Puppet..."
 DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install ${PINST} >/dev/null
 
 echo "Puppet installed!"
+
+#Fix ubuntu bug
+set -e
+sudo touch /etc/puppet/hiera.yaml
+#https://github.com/mitchellh/vagrant/issues/1673
+#https://github.com/dm-cracked-sean-knight/packer-templates/commit/bfec91c086e3dd318d4c16b3658a9db4a5c08d15
+sudo sed -i -r -e 's/^([# ]+)?(mesg n)/# \2/' /root/.profile
+
+#https://github.com/comperiosearch/vagrant-elk-box/issues/19
+sudo sed -e '/templatedir/ s/^#*/#/' -i.back /etc/puppet/puppet.conf
 
 # Install RubyGems for the provider, unless using puppet collections
 if [ "$DISTRIB_CODENAME" != "xenial" ]; then
