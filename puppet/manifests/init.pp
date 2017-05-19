@@ -23,7 +23,13 @@ rbenv::build { "2.4.0":
 }
 
 # --- Rails ---------------------------------------------------------------------
+$essential_packages = ["nginx", "libsqlite3-dev", "sqlite3", "imagemagick", "libxml2", "libxml2-dev", "libxslt1-dev"]
+package { $essential_packages:
+  ensure   => 'installed'
+}
+
 package { "rails":
   ensure   => 'installed',
-  provider => 'gem'
+  provider => 'gem',
+  require  => Package[$essential_packages]
 }
