@@ -1,4 +1,4 @@
-Exec { path => "/home/vagrant/bin:/usr/local/rbenv/bin:/usr/local/rbenv/shims::/usr/local/rbenv/shims/bin:/usr/bin:/bin:/usr/sbin:/sbin" }
+Exec { path => "/home/ubuntu/bin:/usr/local/rbenv/bin:/usr/local/rbenv/shims::/usr/local/rbenv/shims/bin:/usr/bin:/bin:/usr/sbin:/sbin" }
 
 exec { "apt-update":
   command => "/usr/bin/apt-get update",
@@ -13,23 +13,20 @@ package { "nodejs": ensure => present }
 # --- Ruby ---------------------------------------------------------------------
 class { "rbenv": }
 
-rbenv::plugin { "sstephenson/ruby-build": }
-rbenv::plugin { "ianheggie/rbenv-binstubs": }
-rbenv::plugin { "sstephenson/rbenv-gem-rehash": }
+rbenv::plugin { "rbenv/ruby-build": }
 
 rbenv::build { "2.4.0":
-  global => true,
-  require => [Rbenv::Plugin["sstephenson/ruby-build"], Rbenv::Plugin["ianheggie/rbenv-binstubs"], Rbenv::Plugin["sstephenson/rbenv-gem-rehash"]]
+  global 	=> true,
+  require 	=> Rbenv::Plugin["rbenv/ruby-build"]
 }
 
-# --- Rails ---------------------------------------------------------------------
-$essential_packages = ["nginx", "libsqlite3-dev", "sqlite3", "imagemagick", "libxml2", "libxml2-dev", "libxslt1-dev"]
+rbenv::gem { "rails":
+  ruby_version 	=> '2.4.0',
+  require  		=> Rbenv::Build["2.4.0"]
+}
+
+# --- Essential Packages ---------------------------------------------------------------------
+$essential_packages = ["nginx", "sqlite3", "imagemagick"]
 package { $essential_packages:
   ensure   => 'installed'
-}
-
-package { "rails":
-  ensure   => 'installed',
-  provider => 'gem',
-  require  => Package[$essential_packages]
 }

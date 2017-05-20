@@ -1,0 +1,4 @@
+---
+BUNDLE_PATH: "/home/ubuntu/.bundle"
+BUNDLE_BIN: "/home/ubuntu/bin"
+BUNDLE_DISABLE_SHARED_GEMS: "true"
