@@ -26,7 +26,7 @@ rbenv::gem { "rails":
 }
 
 # --- Essential Packages ---------------------------------------------------------------------
-$essential_packages = ["nginx", "sqlite3", "imagemagick"]
+$essential_packages = ["nginx", "libsqlite3-dev", "sqlite3", "imagemagick"]
 package { $essential_packages:
   ensure   => 'installed'
 }
