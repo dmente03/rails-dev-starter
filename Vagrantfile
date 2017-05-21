@@ -14,7 +14,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision "puppet" do |puppet|
     puppet.manifests_path = "puppet/manifests"
     puppet.manifest_file  = "init.pp"
-    puppet.module_path    = "puppet/modules"
+    puppet.module_path    = "modules"
   end
 
   config.vm.provider 'virtualbox' do |v|

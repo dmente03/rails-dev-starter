@@ -7,8 +7,6 @@ exec { "apt-update":
 
 Exec["apt-update"] -> Package <| |>
 
-package { "nodejs": ensure => present }
-
 # --- Ruby ---------------------------------------------------------------------
 class { "rbenv": }
 
@@ -20,7 +18,7 @@ rbenv::build { "2.4.0":
 }
 
 rbenv::gem { "rails":
-  ruby_version 	=> '2.4.0',
+  ruby_version 	=> "2.4.0",
   require  		=> Rbenv::Build["2.4.0"]
 }
 
@@ -33,54 +31,45 @@ $essential_packages = [ "nginx",
 												"libxml2-dev", 
 												"libxslt1-dev" ]
 package { $essential_packages:
-  ensure   => 'installed'
+  ensure   => "installed"
 }
 
 # --- MySQL ---------------------------------------------------------------------
 class install_mysql {
-  class { 'mysql': }
-
-  class { 'mysql::server':
-    config_hash => { 'root_password' => '' }
+  class { "mysql::server":
+    root_password => ""
   }
 
-  package { 'libmysqlclient15-dev':
+  package { "libmysqlclient-dev":
     ensure => installed
   }
 }
-class { 'install_mysql': }
+class { "install_mysql": }
 
 # --- PostgreSQL ---------------------------------------------------------------------
 class install_postgres {
-  class { 'postgresql': }
+  class { "postgresql::server": 
+  	postgres_password => ""
+	}
 
-  class { 'postgresql::server': }
-
-  pg_user { 'vagrant':
-    ensure    => present,
-    superuser => true,
-    require   => Class['postgresql::server']
-  }
-
-  package { 'libpq-dev':
+	package { "libpq-dev":
     ensure => installed
   }
 }
-class { 'install_postgres': }
+class { "install_postgres": }
 
 # --- Node.JS ---------------------------------------------------------------------
 class nodejs {
-  exec { 'add-nodejs-repo':
-    command => '/usr/bin/add-apt-repository ppa:chris-lea/node.js && /usr/bin/apt-get update',
-    unless  => '/bin/ls -ls /usr/bin | grep nodejs'
+  package { "nodejs":
+    ensure  => installed
   }
 
-  package { 'nodejs':
+  package { "npm":
     ensure  => installed,
-    require => Exec['add-nodejs-repo']
+    require => Package["nodejs"]
   }
 }
-class { 'nodejs': }
+class { "nodejs": }
 
 # --- Locale ---------------------------------------------------------------------
 exec { "update-locale":
