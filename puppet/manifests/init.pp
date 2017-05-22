@@ -34,6 +34,11 @@ package { $essential_packages:
   ensure   => "installed"
 }
 
+# RMagick system dependencies
+package { ["libmagickwand-dev"]:
+	ensure => installed,
+}
+
 # --- MySQL ---------------------------------------------------------------------
 class install_mysql {
   class { "mysql::server":
